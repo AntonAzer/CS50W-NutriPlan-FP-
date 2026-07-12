@@ -1,0 +1,103 @@
+{% extends "nutriplan/layout.html" %}
+{% block title %}Recipes — NutriPlan{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold mb-0">Recipe Library</h2>
+  {% if user.is_authenticated %}
+  <a href="{% url 'recipe_create' %}" class="btn btn-success"><i class="bi bi-plus-lg me-1"></i>New Recipe</a>
+  {% endif %}
+</div>
+
+<div class="row g-4">
+  <!-- Filters sidebar -->
+  <div class="col-lg-3">
+    <div class="card border-0 shadow-sm sticky-top" style="top:80px">
+      <div class="card-body">
+        <h6 class="fw-bold mb-3">Filter Recipes</h6>
+        <form method="get" id="filterForm">
+          <!-- Search -->
+          <div class="mb-3">
+            <input type="text" name="q" class="form-control form-control-sm" placeholder="Search…" value="{{ request.GET.q }}">
+          </div>
+          <!-- Cuisine -->
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Cuisine</label>
+            <select name="cuisine" class="form-select form-select-sm">
+              <option value="">All cuisines</option>
+              {% for value, label in cuisines %}
+              <option value="{{ value }}" {% if selected_cuisine == value %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <!-- Tags -->
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Dietary Tags</label>
+            {% for tag in tags %}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="tags" value="{{ tag.id }}"
+                id="tag_{{ tag.id }}" {% if tag.id in selected_tags %}checked{% endif %}>
+              <label class="form-check-label small" for="tag_{{ tag.id }}">{{ tag.name }}</label>
+            </div>
+            {% endfor %}
+          </div>
+          <!-- Max time -->
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Max Total Time (min)</label>
+            <input type="number" name="max_time" class="form-control form-control-sm" min="5" max="300"
+              placeholder="e.g. 60" value="{{ max_time }}">
+          </div>
+          {% if user.is_authenticated %}
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" name="mine" id="mine"
+              {% if request.GET.mine %}checked{% endif %}>
+            <label class="form-check-label small" for="mine">My recipes only</label>
+          </div>
+          {% endif %}
+          <button type="submit" class="btn btn-success btn-sm w-100">Apply</button>
+          <a href="{% url 'recipe_list' %}" class="btn btn-outline-secondary btn-sm w-100 mt-1">Clear</a>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recipe grid -->
+  <div class="col-lg-9">
+    <div id="recipeGrid" class="row g-3">
+      {% if recipes %}
+        {% for recipe in recipes %}
+        <div class="col-sm-6 col-xl-4">
+          <div class="card h-100 shadow-sm recipe-card">
+            {% if recipe.image %}
+            <img src="{{ recipe.image.url }}" class="card-img-top recipe-thumb" alt="{{ recipe.title }}">
+            {% else %}
+            <div class="recipe-thumb-placeholder d-flex align-items-center justify-content-center bg-light">
+              <i class="bi bi-egg-fried text-muted fs-1"></i>
+            </div>
+            {% endif %}
+            <div class="card-body">
+              <h6 class="fw-bold mb-1">{{ recipe.title }}</h6>
+              <p class="text-muted small mb-2">
+                by {{ recipe.user.username }} &nbsp;·&nbsp;
+                <i class="bi bi-clock me-1"></i>{{ recipe.total_time }} min
+              </p>
+              {% for tag in recipe.tags.all %}
+              <span class="badge bg-success-subtle text-success me-1 mb-1">{{ tag.name }}</span>
+              {% endfor %}
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0">
+              <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-sm btn-outline-success w-100">View</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12 text-center py-5 text-muted">
+          <i class="bi bi-search fs-1 d-block mb-2"></i>
+          No recipes found. Try adjusting your filters.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

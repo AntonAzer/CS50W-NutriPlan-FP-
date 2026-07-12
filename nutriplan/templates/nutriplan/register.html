@@ -1,0 +1,20 @@
+{% extends "nutriplan/layout.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Sign Up — NutriPlan{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h3 class="fw-bold text-center mb-4"><i class="bi bi-egg-fried text-success me-2"></i>Create Account</h3>
+        {% crispy form %}
+        <hr>
+        <p class="text-center text-muted small mb-0">
+          Already have an account? <a href="{% url 'login' %}">Log in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
