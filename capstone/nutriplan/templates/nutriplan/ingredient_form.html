@@ -1,0 +1,16 @@
+{% extends "nutriplan/layout.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Add Ingredient — NutriPlan{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-success text-white fw-bold">Add Ingredient</div>
+      <div class="card-body p-4">
+        {% crispy form %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
