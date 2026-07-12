@@ -345,3 +345,22 @@ def api_mealplan_remove(request):
     nutrition = entry.recipe.nutrition_per_serving()
     entry.delete()
     return JsonResponse({'deleted': entry_id, 'nutrition': nutrition})
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
+
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect(request.GET.get('next', 'index'))
+    else:
+        form = AuthenticationForm()
+    
+    # أضف الـ helper هنا
+    form.helper = FormHelper()
+    form.helper.add_input(Submit('submit', 'Log In', css_class='btn btn-success w-100 mt-2'))
+    
+    return render(request, 'nutriplan/login.html', {'form': form})

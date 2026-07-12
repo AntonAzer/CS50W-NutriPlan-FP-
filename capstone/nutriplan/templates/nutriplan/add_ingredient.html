@@ -14,8 +14,16 @@
           Don't see the ingredient you need?
           <a href="{% url 'ingredient_create' %}" target="_blank">Create a new ingredient</a> first, then come back.
         </p>
-        {% crispy form %}
-        <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-outline-secondary mt-2">Cancel</a>
+        <form method="post">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-plus-lg me-1"></i>Add Ingredient
+            </button>
+            <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
       </div>
     </div>
   </div>
